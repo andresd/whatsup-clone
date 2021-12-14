@@ -8,6 +8,7 @@ import { MessageBubble } from './messageBubble'
 import { chatViewStyles as styles } from './styles'
 import { usePrevious } from 'react-use'
 import { humanizeTimestamp } from '../../lib/utils'
+import { TimeStampLabel } from '../timestampLabel'
 
 type ChatViewProps = HTMLAttributes<HTMLDivElement>
 
@@ -21,7 +22,6 @@ export const ChatView = (props: ChatViewProps) => {
   const selectedChat = useRecoilValue(selectedChatState)
   const [messages, setMessages] = useRecoilState(messagesState)
   const currentUser = useRecoilValue(currentUserState)
-
   const reversedMessages = useMemo(() => messages.slice().reverse(), [messages])
 
   const prevMessagesCount = usePrevious(reversedMessages.length)
@@ -40,7 +40,7 @@ export const ChatView = (props: ChatViewProps) => {
       lastBubbleRef.current?.scrollIntoView(false)
       setJustAddedMessage(false)
     }
-  }, [reversedMessages, justAddedMessage, prevMessagesCount])
+  }, [reversedMessages, justAddedMessage, prevMessagesCount, selectedChat])
 
   const theOtherUser = selectedChat?.users?.find(user => user?.id !== currentUser?.id)
 
@@ -93,11 +93,17 @@ export const ChatView = (props: ChatViewProps) => {
             {reversedMessages.map((message, index) => {
               const leftSide = message.userId === currentUser?.id
               const isLast = index === reversedMessages.length - 1
-              const prevTimestamp = index > 0 ? humanizeTimestamp(reversedMessages[index - 1].timestamp) : ''
-              const timestamp = humanizeTimestamp(message.timestamp)
+              const prevTimestamp = index > 0 ? humanizeTimestamp(reversedMessages[index - 1].timestamp, true) : ''
+              const timestamp = humanizeTimestamp(message.timestamp, true)
               return (
                 <>
-                  {prevTimestamp !== timestamp && <div className={styles.timestampRow}><span className={styles.timestamp}>{timestamp}</span></div>}
+                  {prevTimestamp !== timestamp && (
+                    <div className={styles.timestampRow}>
+                      <span className={styles.timestamp}>
+                        <TimeStampLabel timestamp={message.timestamp} daily/>
+                      </span>
+                    </div>
+                  )}
                   <div key={index} className={leftSide ? styles.leftBubble : styles.rightBubble}>
                     {!isLast && <MessageBubble message={message} user={message.user} leftSide={leftSide} />}
                     {isLast && <MessageBubble ref={lastBubbleRef} message={message} user={message.user} leftSide={leftSide} />}

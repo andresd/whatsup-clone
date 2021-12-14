@@ -10,7 +10,7 @@ dayjs.extend(isToday)
 dayjs.extend(duration)
 dayjs.extend(utc)
 
-export const humanizeTimestamp = (timestamp?: number) => {
+export const humanizeTimestamp = (timestamp?: number, daily?: boolean) => {
   if (!timestamp) {
     return 'XX:XX'
   }
@@ -19,14 +19,19 @@ export const humanizeTimestamp = (timestamp?: number) => {
   const utc = dayjs.utc(timestamp)        // another date
   const duration = dayjs.duration(now.diff(utc))
 
-  if (duration.asSeconds() < 60) {
-    return 'Now'
-  }
+  if (daily) {
+    if (utc.isToday()) {
+      return 'Today'
+    }
+  } else {
+    if (duration.asSeconds() < 60) {
+      return 'Now'
+    }
 
-  if (utc.isToday()) {
-    return dayjs.utc(timestamp).format('HH:mm')
+    if (utc.isToday()) {
+      return dayjs.utc(timestamp).format('HH:mm')
+    }
   }
-
   if (utc.isYesterday())  {
     return 'Yesterday'
   }

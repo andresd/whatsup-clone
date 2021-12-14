@@ -1,4 +1,3 @@
-import { time } from 'console'
 import { Chat, Message, User } from './types'
 
 const users: User[] = [

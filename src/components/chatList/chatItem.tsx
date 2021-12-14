@@ -1,10 +1,10 @@
-import React, { HTMLAttributes, useState } from 'react'
+import React, { HTMLAttributes } from 'react'
 import { cx } from '@emotion/css'
 import { Chat, User } from '../../lib/types'
 import { Avatar } from '../avatar'
-import { humanizeTimestamp } from '../../lib/utils'
-import { useInterval, useMedia } from 'react-use'
+import { useMedia } from 'react-use'
 import { chatItemStyles as styles } from './styles'
+import { TimeStampLabel } from '../timestampLabel'
 
 type ChatItemProps = {
   chat: Chat
@@ -15,13 +15,8 @@ type ChatItemProps = {
 
 export const ChatItem = (props: ChatItemProps) => {
   const { user, chat: { latestMessage }, onClick, isSelected = false } = props
-  const [timestamp, setTimestamp] = useState(humanizeTimestamp(latestMessage?.timestamp))
 
   const isWide = useMedia('(min-width: 640px)')
-
-  useInterval(() => {
-    setTimestamp(humanizeTimestamp(latestMessage?.timestamp))
-  }, 60000)
 
   return (
     <div className={cx(styles.container, isSelected ? styles.selectedContainer : '')} onClick={onClick}>
@@ -35,7 +30,7 @@ export const ChatItem = (props: ChatItemProps) => {
         </div>
       )}
       <div className={styles.rightContainer}>
-        <div className={styles.timestamp}>{timestamp}</div>
+        <div className={styles.timestamp}><TimeStampLabel timestamp={latestMessage?.timestamp}/></div>
       </div>
 
     </div>

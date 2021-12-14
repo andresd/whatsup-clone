@@ -1,5 +1,5 @@
-import { atom, atomFamily, selectorFamily } from 'recoil'
-import { getMessagesOfChat, getUser } from './data'
+import { atom, selectorFamily } from 'recoil'
+import { getUser } from './data'
 import { Chat, Message, User } from './types'
 
 export const currentUserState = atom<User | null>({
