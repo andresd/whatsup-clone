@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, UIEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { cx } from '@emotion/css'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { currentUserState, messagesState, selectedChatState } from '../../lib/atoms'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { currentUserState, latestMessagesState, messagesState, selectedChatState } from '../../lib/atoms'
 import { addMessage, getMessagesOfChat } from '../../lib/data'
 import { Avatar } from '../avatar'
 import { MessageBubble } from './messageBubble'
@@ -22,6 +22,8 @@ export const ChatView = (props: ChatViewProps) => {
   const selectedChat = useRecoilValue(selectedChatState)
   const [messages, setMessages] = useRecoilState(messagesState)
   const currentUser = useRecoilValue(currentUserState)
+  const setLatestMessages = useSetRecoilState(latestMessagesState(selectedChat?.id))
+
   const reversedMessages = useMemo(() => messages.slice().reverse(), [messages])
 
   const prevMessagesCount = usePrevious(reversedMessages.length)
@@ -71,7 +73,8 @@ export const ChatView = (props: ChatViewProps) => {
         return
       }
       event.preventDefault()
-      const newMessage  = addMessage(selectedChat.id, currentUser.id, event.currentTarget.value)
+      const newMessage = addMessage(selectedChat.id, currentUser.id, event.currentTarget.value)
+      setLatestMessages(newMessage)
       setMessages(messages => [newMessage, ...messages])
       setInputMessage('')
       setJustAddedMessage(true)

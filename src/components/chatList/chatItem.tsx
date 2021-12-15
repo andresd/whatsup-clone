@@ -1,22 +1,35 @@
-import React, { HTMLAttributes } from 'react'
+import React, { HTMLAttributes, useEffect } from 'react'
 import { cx } from '@emotion/css'
 import { Chat, User } from '../../lib/types'
 import { Avatar } from '../avatar'
 import { useMedia } from 'react-use'
 import { chatItemStyles as styles } from './styles'
 import { TimeStampLabel } from '../timestampLabel'
+import { useRecoilState } from 'recoil'
+import { latestMessagesState } from '../../lib/atoms'
+import { getChatLastMessage } from '../../lib/data'
 
 type ChatItemProps = {
-  chat: Chat
+  chatId: number
   user?: User
   isSelected?: boolean
   onClick?: () => void
 } & HTMLAttributes<HTMLDivElement>
 
 export const ChatItem = (props: ChatItemProps) => {
-  const { user, chat: { latestMessage }, onClick, isSelected = false } = props
+  const { user, chatId, onClick, isSelected = false } = props
 
   const isWide = useMedia('(min-width: 640px)')
+  const [latestMessage, setLatestMessage] = useRecoilState((latestMessagesState(chatId)))
+
+  useEffect(() => {
+    if (latestMessage === null) {
+      const message = getChatLastMessage(chatId)
+      setLatestMessage(message)
+    }
+  }, [])
+
+  console.log(latestMessage)
 
   return (
     <div className={cx(styles.container, isSelected ? styles.selectedContainer : '')} onClick={onClick}>

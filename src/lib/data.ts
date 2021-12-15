@@ -111,6 +111,11 @@ export const getUser = (id: number): User | null => {
   return users.find(user => user.id === id) ?? null
 }
 
+export const getChatLastMessage = (chatId: number): Message | undefined => {
+  const message = messages.filter(message => message.chatId === chatId).reduce((a, b) => (a.timestamp > b.timestamp ? a : b))
+  return message
+}
+
 export const getChatsOfUser = (userId: number): Chat[] => {
   return chats
     .filter(chat => chat.userIds.includes(userId))

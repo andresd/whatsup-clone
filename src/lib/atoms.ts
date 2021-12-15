@@ -1,4 +1,4 @@
-import { atom, selectorFamily } from 'recoil'
+import { atom, atomFamily, selectorFamily } from 'recoil'
 import { getUser } from './data'
 import { Chat, Message, User } from './types'
 
@@ -28,4 +28,9 @@ export const selectedChatState = atom<Chat | null>({
 export const messagesState = atom<Message[]>({
   key: 'messagesState',
   default: []
+})
+
+export const latestMessagesState = atomFamily<Message | null | undefined, number | undefined>({
+  key: 'latestMessagesState',
+  default: null
 })

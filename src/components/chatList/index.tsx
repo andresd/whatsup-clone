@@ -51,7 +51,7 @@ export const ChatList = (props: ChatListProps) => {
           {chats.map((chat, index) => (
             <ChatItem
               key={index}
-              chat={chat}
+              chatId={chat.id}
               user={chat.users?.find(user => user?.id !== currentUser?.id)}
               isSelected={selectedChat?.id === chat.id}
               onClick={() => setSelectedChat(chat)}
@@ -68,7 +68,7 @@ export const ChatList = (props: ChatListProps) => {
         {chats.map((chat, index) => (
           <ChatItem
             key={index}
-            chat={chat}
+            chatId={chat.id}
             user={chat.users?.find(user => user?.id !== currentUser?.id)}
             isSelected={selectedChat?.id === chat.id}
             onClick={() => setSelectedChat(chat)}

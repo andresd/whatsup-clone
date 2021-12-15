@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useInterval } from 'react-use'
 import { humanizeTimestamp } from '../../lib/utils'
@@ -9,11 +9,17 @@ type TimeStampLabelProps = {
 }
 
 export const TimeStampLabel = (props: TimeStampLabelProps) => {
-  const [timestamp, setTimestamp] = useState<string>(humanizeTimestamp(props.timestamp, props.daily))
+  const { timestamp, daily } = props
+
+  const [timestampToShow, setTimestampToShow] = useState<string>(humanizeTimestamp(timestamp, daily))
+
+  useEffect(() => {
+    setTimestampToShow(humanizeTimestamp(timestamp, daily))
+  }, [timestamp])
 
   useInterval(() => {
-    setTimestamp(humanizeTimestamp(props.timestamp, props.daily))
+    setTimestampToShow(humanizeTimestamp(timestamp, daily))
   }, 60000)
 
-  return <>{timestamp}</>
+  return <>{timestampToShow}</>
 }
